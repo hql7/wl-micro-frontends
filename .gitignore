@@ -6,10 +6,12 @@ bin-release/
 
 # Other files and folders
 .settings/
+
 main-container/node_modules/
 module-basic-data/node_modules/
 module-report/node_modules/
 node_modules/
+
 # Executables
 *.swf
 *.air
