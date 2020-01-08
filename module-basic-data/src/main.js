@@ -10,12 +10,12 @@ Vue.config.productionTip = false;
 let router = null;
 let instance = null;
 
-export async function bootstrap() {
+export async function bootstrap(props) {
+  console.log(props)
   console.log("进入基础数据");
 }
 
-export async function mount(props) {
-  console.log("创建基础数据");
+export async function mount() {
   router = new VueRouter({
     base: window.__POWERED_BY_QIANKUN__ ? '/basic' : '/',
     mode: 'history',

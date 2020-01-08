@@ -2,8 +2,15 @@ import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
+
 Vue.config.productionTip = false;
-import { registerMicroApps, runAfterFirstMounted, setDefaultMountApp, start } from "qiankun";
+import {
+  registerMicroApps,
+  runAfterFirstMounted,
+  setDefaultMountApp,
+  start
+} from "qiankun";
+import "./plugins/element.js";
 
 let app = null;
 /* function render({ appContent, loading }) {
@@ -36,7 +43,7 @@ let app = null;
 function render({ appContent, loading }) {
   if (!app && appContent !== undefined) {
     app = new Vue({
-      el: '#container',
+      el: "#container",
       router,
       store,
       data() {
@@ -62,31 +69,45 @@ function render({ appContent, loading }) {
 
 function genActiveRule(routerPrefix) {
   return location => location.pathname.startsWith(routerPrefix);
-};
+}
 render({ loading: true });
+let msg = {
+  auth: false
+};
 //注册子应用
 registerMicroApps(
   [
-    { name: "module-basic-data", entry: "//localhost:7771", render, activeRule: genActiveRule("/basic") },
-    { name: "module-report", entry: "//localhost:7772", render, activeRule: genActiveRule("/report") }
-  ],
-  {
+    {
+      name: "module-basic-data",
+      entry: "//localhost:7771",
+      render,
+      activeRule: genActiveRule("/basic"),
+      props: msg
+    },
+    {
+      name: "module-report",
+      entry: "//localhost:7772",
+      render,
+      activeRule: genActiveRule("/report")
+    }
+  ]
+  /* {
     beforeLoad: [
       app => {
-        console.log("before load",app);
+        console.log("before load", app);
       }
     ],
     beforeMount: [
       app => {
-        console.log("before mount",app);
+        console.log("before mount", app);
       }
     ],
     afterUnmount: [
       app => {
-        console.log("after unload",app);
+        console.log("after unload", app);
       }
     ]
-  }
+  } */
 );
 setDefaultMountApp("/basic");
 runAfterFirstMounted(() => console.info("first app mounted"));

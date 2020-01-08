@@ -1,48 +1,47 @@
 <template>
-  <div id="root">
-    <div id="nav">
-      <div @click="goto('app-basic','/basic')">基础数据</div>
-      <div @click="goto('app-report','/report')">报表</div>
+  <div id="root" class="main-container">
+    <div class="main-container-menu">
+      <MenuItem class="main-menu-box" />
     </div>
-    <div id="app-view" v-html="content"></div>
+    <div id="root-view" class="app-view-box" v-html="content"></div>
   </div>
 </template>
 
 <script>
+import MenuItem from "@/components/menu.vue";
+
 export default {
-  name: "base-view",
+  name: "root-view",
+  components: {
+    MenuItem
+  },
   props: {
     loading: Boolean,
     content: String
-  },
-  methods: {
-    goto(title, href) {
-      console.log("title", title, "href", href);
-      window.history.pushState({}, title, href);
-    }
   }
 };
 </script>
 
 <style lang="scss">
-#app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
 }
-
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
+.main-container {
+  display: flex;
+  height: 100%;
+  > .main-container-menu {
+    width: 200px;
+    height: 100%;
+    background-color: #545c64;
+    > .main-menu-box {
+      border: none;
     }
+  }
+  > .app-view-box {
+    flex: 1;
   }
 }
 </style>
