@@ -5,6 +5,7 @@ import "./public-path";
 import routes from "./router";
 import store from "./store";
 import "./plugins/element.js";
+import "@/assets/css/demo.min.css"
 
 Vue.config.productionTip = false;
 

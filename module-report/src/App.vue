@@ -21,7 +21,7 @@ export default {
      * url 路由地址
      */
     routerChange(url) {
-      this.$router.push(url);
+      this.$router.replace(url);
     }
   }
 };

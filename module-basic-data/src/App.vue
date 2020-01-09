@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <h2>基础数据子应用</h2>
+    <h2>基础数据子应用 <span class="right">auth:weilan</span></h2>
     <div id="nav">
       <el-button-group>
         <el-button type="primary" @click="routerChange('/')">表格</el-button>
@@ -21,7 +21,7 @@ export default {
      * url 路由地址
      */
     routerChange(url) {
-      this.$router.push(url);
+      this.$router.replace(url);
     }
   }
 };
