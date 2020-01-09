@@ -42,6 +42,7 @@ body {
   }
   > .app-view-box {
     flex: 1;
+    padding: 12px;
   }
 }
 </style>

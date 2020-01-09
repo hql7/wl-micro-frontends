@@ -1,9 +1,10 @@
 import Vue from "vue";
-import VueRouter from 'vue-router';
+import VueRouter from "vue-router";
 import App from "./App.vue";
-import './public-path';
+import "./public-path";
 import routes from "./router";
 import store from "./store";
+import "./plugins/element.js";
 
 Vue.config.productionTip = false;
 
@@ -11,21 +12,21 @@ let router = null;
 let instance = null;
 
 export async function bootstrap(props) {
-  console.log(props)
+  console.log(props);
   console.log("进入基础数据");
 }
 
 export async function mount() {
   router = new VueRouter({
-    base: window.__POWERED_BY_QIANKUN__ ? '/basic' : '/',
-    mode: 'history',
+    base: window.__POWERED_BY_QIANKUN__ ? "/basic" : "/",
+    mode: "history",
     routes
   });
   instance = new Vue({
     router,
     store,
     render: h => h(App)
-  }).$mount("#app")
+  }).$mount("#app");
 }
 
 export async function unmount() {

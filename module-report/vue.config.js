@@ -1,9 +1,8 @@
-
-const path = require('path');
-const packageName = require('./package.json').name;
+const path = require("path");
+const packageName = require("./package.json").name;
 
 function resolve(dir) {
-  return path.join(__dirname, dir)
+  return path.join(__dirname, dir);
 }
 
 const port = 7772; // dev port
@@ -17,8 +16,8 @@ module.exports = {
    * Detail: https://cli.vuejs.org/config/#publicpath
    */
   // publicPath:`//localhost:${port}`,
-  outputDir: 'dist',
-  assetsDir: 'static',
+  outputDir: "dist",
+  assetsDir: "static",
   // build: {
   //   assetsPublicPath: '/',
   //   assetsSubDirectory: 'static'
@@ -39,7 +38,7 @@ module.exports = {
       errors: true
     },
     headers: {
-      'Access-Control-Allow-Origin': '*',
+      "Access-Control-Allow-Origin": "*"
     }
   },
   // 自定义webpack配置
@@ -47,16 +46,16 @@ module.exports = {
     // name: name,
     resolve: {
       alias: {
-        '@': resolve('src')
+        "@": resolve("src")
       }
     },
     output: {
       //把子应用打包成 umd 库格式
       library: `${packageName}-[name]`,
-      libraryTarget: 'umd',
-      jsonpFunction: `webpackJsonp_${packageName}`,
+      libraryTarget: "umd",
+      jsonpFunction: `webpackJsonp_${packageName}`
     }
-  },
+  }
   // chainWebpack: config => {
   //   config.plugin("html").tap(args => {
   //     args[0].minify = false;

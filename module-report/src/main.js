@@ -1,9 +1,10 @@
 import Vue from "vue";
-import VueRouter from 'vue-router';
+import VueRouter from "vue-router";
 import App from "./App.vue";
-import './public-path';
+import "./public-path";
 import routes from "./router";
 import store from "./store";
+import "./plugins/element.js";
 
 Vue.config.productionTip = false;
 
@@ -17,15 +18,15 @@ export async function bootstrap() {
 export async function mount(props) {
   console.log("创建报表");
   router = new VueRouter({
-    base: window.__POWERED_BY_QIANKUN__ ? '/report' : '/',
-    mode: 'history',
-    routes,
+    base: window.__POWERED_BY_QIANKUN__ ? "/report" : "/",
+    mode: "history",
+    routes
   });
   instance = new Vue({
     router,
     store,
     render: h => h(App)
-  }).$mount("#app")
+  }).$mount("#app");
 }
 
 export async function unmount() {
