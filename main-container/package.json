@@ -4,14 +4,17 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
-    "build:all": "concurrently \"npm run build\" \"npm run build:basic\" \"npm run build:report\"",
-    "build:basic": "cd ../module-basic-data && npm run build",
-    "build:report": "cd ../module-report && npm run build",
     "serve:basic": "cd ../module-basic-data && npm run serve",
     "serve:report": "cd ../module-report && npm run serve",
-    "start": "concurrently \"npm run serve\" \"npm run serve:basic\" \"npm run serve:report\""
+    "start": "concurrently \"npm run serve\" \"npm run serve:basic\" \"npm run serve:report\"",
+    "build": "vue-cli-service build",
+    "build:basic": "cd ../module-basic-data && npm run build",
+    "build:report": "cd ../module-report && npm run build",
+    "build:all": "concurrently \"npm run build\" \"npm run build:basic\" \"npm run build:report\"",
+    "install:basic": "cd ../module-basic-data && npm install",
+    "install:report": "cd ../module-report && npm install",
+    "install:all": "concurrently \"npm run install:basic\" \"npm run install:report\" \"npm install\"",
+    "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "concurrently": "^5.0.2",
