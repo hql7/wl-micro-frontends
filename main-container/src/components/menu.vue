@@ -2,8 +2,6 @@
   <el-menu
     default-active="1-1"
     class="el-menu-vertical-demo"
-    @open="handleOpen"
-    @close="handleClose"
     :default-openeds="['1','2','5','5-4']"
     background-color="#545c64"
     text-color="#fff"
@@ -63,12 +61,6 @@ export default {
     // 调起子应用
     goto(title, href) {
       window.history.pushState({}, title, href);
-    },
-    handleOpen(key, keyPath) {
-      console.log(key, keyPath);
-    },
-    handleClose(key, keyPath) {
-      console.log(key, keyPath);
     }
   }
 };

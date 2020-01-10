@@ -12,11 +12,9 @@ let router = null;
 let instance = null;
 
 export async function bootstrap() {
-  console.log("进入报表");
 }
 
-export async function mount(props) {
-  console.log("创建报表");
+export async function mount() {
   router = new VueRouter({
     base: window.__POWERED_BY_QIANKUN__ ? "/report" : "/",
     mode: "history",
