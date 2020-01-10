@@ -70,10 +70,12 @@ function render({ appContent, loading }) {
 function genActiveRule(routerPrefix) {
   return location => location.pathname.startsWith(routerPrefix);
 }
-render({ loading: true });
+
+render();
 let msg = {
   auth: false
 };
+
 //注册子应用
 registerMicroApps(
   [
@@ -88,7 +90,8 @@ registerMicroApps(
       name: "module-report",
       entry: "//localhost:7772",
       render,
-      activeRule: genActiveRule("/report")
+      activeRule: genActiveRule("/report"),
+      props: msg
     }
   ]
   /* {
