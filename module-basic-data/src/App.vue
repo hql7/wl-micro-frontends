@@ -31,7 +31,7 @@ export default {
      * data 自定义数据
      */
     callParentLogout(data) {
-      this._LOGOUT_(data);
+      this.LOGOUT_(data);
     }
   }
 };

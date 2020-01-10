@@ -12,13 +12,13 @@ Vue.config.productionTip = false;
 let router = null;
 let instance = null;
 
-export async function bootstrap() {
-}
-
-export async function mount(props = {}) {
+export async function bootstrap(props = {}) {
   Array.isArray(props.fns) && props.fns.map(i => {
     Vue.prototype[i.name] = i[i.name]
   });
+}
+
+export async function mount() {
   router = new VueRouter({
     base: window.__POWERED_BY_QIANKUN__ ? "/basic" : "/",
     mode: "history",

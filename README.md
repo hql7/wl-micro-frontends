@@ -27,3 +27,57 @@ qiankun + vue + element 的微前端架构项目，主项目与子应用均使�
     npm build:all 打包主应用和所有子应用
 
   ```
+
+### 父子应用信息传递机制
+
+  微前端父子应用消息传递机制类似于`react`的`props`，将`data`信息和`fn`函数作为props传递给子应用。再由子应用使用信息数据或调用回调函数。
+
+  主应用中
+  ``` 
+  // 定义传输信息
+  let msg = {
+    data: {
+      auth: false
+    },
+    fns: [
+      {
+        name: "LOGOUT_",
+        LOGOUT_(data) {
+          alert('父应用返回信息：' + data)
+        }
+      }
+    ]
+  };
+
+  // 注册应用
+  registerMicroApps(
+  [
+    {
+      name: "app1",
+      entry: "//localhost:7771",
+      render,
+      activeRule: genActiveRule("/app1"),
+      props: msg // 通过注册函数提供的props参数将msg信息传递给子应用
+    }
+  ])
+  ```
+  子应用中main.js中
+  ```
+  // 将接收到的函数挂在vue原型方便全局调用
+  export async function bootstrap(props = {}) {
+    Array.isArray(props.fns) && props.fns.map(i => {
+      Vue.prototype[i.name] = i[i.name]
+    });
+    ... 对传进来的data数据进行处理，例如将传入的store或routes注入
+  }
+  ```
+  子应用.vue文件中
+  ```
+    /**
+     * 通知父应用退出登录
+     * data 自定义数据
+     */
+    callParentLogout(data) {
+      this.LOGOUT_(data);
+    }
+  ```

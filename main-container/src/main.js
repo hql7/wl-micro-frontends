@@ -80,8 +80,8 @@ let msg = {
   },
   fns: [
     {
-      name: "_LOGOUT_",
-      _LOGOUT_(data) {
+      name: "LOGOUT_",
+      LOGOUT_(data) {
         alert('父应用返回信息：' + data)
       }
     }
