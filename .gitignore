@@ -11,6 +11,7 @@ main-container/node_modules/
 module-basic-data/node_modules/
 module-report/node_modules/
 node_modules/
+LICENSE
 
 # Executables
 *.swf
