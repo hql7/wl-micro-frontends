@@ -1,5 +1,5 @@
-const path = require("path");
-const packageName = require("./package.json").name;
+const path = require('path');
+const { name } = require('./package');
 
 function resolve(dir) {
   return path.join(__dirname, dir);
@@ -15,19 +15,11 @@ module.exports = {
    * In most cases please use '/' !!!
    * Detail: https://cli.vuejs.org/config/#publicpath
    */
-  // publicPath:`//localhost:${port}`,
-  outputDir: "dist",
-  assetsDir: "static",
-  // build: {
-  //   assetsPublicPath: '/',
-  //   assetsSubDirectory: 'static'
-  // }
-  // 默认在生成的静态资源文件名中包含hash以控制缓存
+  outputDir: 'dist',
+  assetsDir: 'static',
   filenameHashing: true,
   // tweak internal webpack configuration.
   // see https://github.com/vuejs/vue-cli/blob/dev/docs/webpack.md
-  // 如果你不需要使用eslint，把lintOnSave设为false即可
-  lintOnSave: false,
   devServer: {
     // host: '0.0.0.0',
     hot: true,
@@ -35,31 +27,24 @@ module.exports = {
     port,
     overlay: {
       warnings: false,
-      errors: true
+      errors: true,
     },
     headers: {
-      "Access-Control-Allow-Origin": "*"
-    }
+      'Access-Control-Allow-Origin': '*',
+    },
   },
   // 自定义webpack配置
   configureWebpack: {
-    // name: name,
     resolve: {
       alias: {
-        "@": resolve("src")
-      }
+        '@': resolve('src'),
+      },
     },
     output: {
-      //把子应用打包成 umd 库格式
-      library: `${packageName}-[name]`,
-      libraryTarget: "umd",
-      jsonpFunction: `webpackJsonp_${packageName}`
-    }
-  }
-  // chainWebpack: config => {
-  //   config.plugin("html").tap(args => {
-  //     args[0].minify = false;
-  //     return args;
-  //   });
-  // }
+      // 把子应用打包成 umd 库格式
+      library: `${name}-[name]`,
+      libraryTarget: 'umd',
+      jsonpFunction: `webpackJsonp_${name}`,
+    },
+  },
 };

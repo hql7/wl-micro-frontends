@@ -24,7 +24,9 @@ export default {
      * url 路由地址
      */
     routerChange(url) {
-      this.$router.replace(url);
+      this.$router.push(url).catch(err => {
+        console.log(err);
+      });
     },
     /**
      * 通知父应用退出登录

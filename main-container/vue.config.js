@@ -2,7 +2,7 @@
 const port = 7770; // dev port
 
 module.exports = {
-  publicPath: "./",
+  publicPath: './',
   devServer: {
     // host: '0.0.0.0',
     hot: true,
@@ -13,7 +13,7 @@ module.exports = {
       errors: true
     },
     headers: {
-      "Access-Control-Allow-Origin": "*"
+      'Access-Control-Allow-Origin': '*',
     }
-  }
+  },
 };
