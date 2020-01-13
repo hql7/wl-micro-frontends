@@ -1,0 +1,11 @@
+{
+  "name": "wl-qiankun",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "s": "cd main-container && npm run start",
+    "b": "cd main-container && npm run build:all",
+    "i": "cd main-container && npm run install:all",
+    "lint": "vue-cli-service lint"
+  }
+}
