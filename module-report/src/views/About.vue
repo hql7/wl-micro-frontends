@@ -233,7 +233,7 @@ export default {
       console.log(checkAll);
     },
     // 自定义节点 仅树形结构支持
-    renderContent(h, { node, data, store }) {
+    renderContent(h, { node, data }) {
       return (
         <span class="custom-tree-node">
           <span>{node.label}</span>
