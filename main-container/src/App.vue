@@ -29,11 +29,6 @@ export default {
   props: {
     loading: Boolean,
     content: String
-  },
-  computed: {
-    isCollapse() {
-      return this.$store.getters.is_collapse;
-    }
   }
 };
 </script>
@@ -49,15 +44,6 @@ body {
   display: flex;
   width: 100%;
   height: 100%;
-}
-.main-logo {
-  height: 60px;
-  background: #2a3f54;
-  text-align: center;
-  line-height: 60px;
-  font-size: 18px;
-  font-weight: 600;
-  color: #fff;
 }
 .main-container-content {
   flex: 1;

@@ -7,6 +7,7 @@
     :background-color="themeMenu.background"
     :active-text-color="themeMenu.active_text"
   >
+   <div class="the-menu-logo">{{is_collapse?'WL':'WL微前端项目'}}</div>
     <el-submenu v-for="sub of menu_data" :key="sub.id" :index="sub.id">
       <template slot="title">
         <i class="menu-icon" :class="sub.icon"></i>
@@ -33,7 +34,7 @@ export default {
   data() {
     return {
       theme_menu: {
-        background: "#2A3F54", 
+        background: "#2A3F54",
         text: "#fff",
         active_text: "#fff"
       }, // 菜单主题
@@ -100,9 +101,17 @@ export default {
 
 <style lang="scss">
 .the-menu {
-  height: calc(100% - 60px);
+  height: 100%;
   width: 200px;
-  border-color: #2A3F54;
+  border-color: #2a3f54;
+  .the-menu-logo {
+    height: 60px;
+    text-align: center;
+    line-height: 60px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+  }
   .menu-icon {
     color: #fff;
   }
