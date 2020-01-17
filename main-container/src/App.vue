@@ -1,10 +1,7 @@
 <template>
   <div id="root" class="main-container">
     <!-- 左侧菜单区 -->
-    <div class="main-container-menu">
-      <div class="main-logo">{{isCollapse?'WL':'WeiLan'}}</div>
-      <the-menu class="main-menu-box" />
-    </div>
+    <the-menu class="main-menu-box" />
     <!-- 右侧视图 -->
     <div class="main-container-content">
       <!-- 上部导航区 -->
