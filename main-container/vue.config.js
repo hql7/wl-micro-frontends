@@ -1,5 +1,5 @@
 
-const port = 7770; // dev port
+const port = 6650; // dev port
 
 module.exports = {
   // publicPath: './',

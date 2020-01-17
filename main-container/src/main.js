@@ -4,13 +4,19 @@ import router from "./router";
 import store from "./store";
 
 Vue.config.productionTip = false;
+// 导入乾坤函数
 import {
   registerMicroApps,
   runAfterFirstMounted,
   setDefaultMountApp,
   start
 } from "qiankun";
+// 按需导入element-ui
 import "./plugins/element.js";
+// 导入封装后的ui组件
+import "./library/ui/install";
+// 导入公共工具函数
+import { genActiveRule, routerGo } from "./library/js/util"
 
 let app = null;
 function render({ appContent, loading } = {}) {
@@ -39,12 +45,6 @@ function render({ appContent, loading } = {}) {
     app.loading = loading;
   }
 };
-
-// 路由监听
-function genActiveRule(routerPrefix) {
-  return location => location.pathname.startsWith(routerPrefix);
-}
-
 render();
 
 // 定义传入子应用的数据
@@ -54,10 +54,8 @@ let msg = {
   },
   fns: [
     {
-      name: "LOGOUT_",
-      LOGOUT_(data) {
-        alert('父应用返回信息：' + data)
-      }
+      name: "routerGo",
+      routerGo
     }
   ]
 };
@@ -67,20 +65,20 @@ registerMicroApps(
   [
     {
       name: "module-basic-data",
-      entry: "//localhost:7771",
+      entry: "//localhost:6651",
       render,
       activeRule: genActiveRule("/basic"),
       props: msg
     },
     {
       name: "module-report",
-      entry: "//localhost:7772",
+      entry: "//localhost:6652",
       render,
       activeRule: genActiveRule("/report"),
       props: msg
     }
-  ]
-  /* {
+  ],
+  {
     beforeLoad: [
       app => {
         console.log("before load", app);
@@ -96,7 +94,7 @@ registerMicroApps(
         console.log("after unload", app);
       }
     ]
-  } */
+  }
 );
 
 // 设置默认子应用
@@ -104,7 +102,7 @@ setDefaultMountApp("/basic");
 // 第一个子应用加载完毕回调
 runAfterFirstMounted();
 // 启动微服务
-start({ prefetch: true});
+start({ prefetch: true });
 
 /* new Vue({
   router,

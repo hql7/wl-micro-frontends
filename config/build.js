@@ -16,8 +16,8 @@ function build() {
   sub_apps.forEach(async i => {
     console.log(`${i} 开始打包 后续不再提示 请自行查看`)
     const { stdout, stderr } = await exec('npm run build', { cwd: path.resolve(i) });
-    console.log(stdout)
-    console.error(stderr)
+    console.log(i, 'success', stdout)
+    console.error(i, 'error', stderr)
   });
 };
 build();

@@ -1,23 +1,42 @@
 <template>
   <div id="root" class="main-container">
+    <!-- 左侧菜单区 -->
     <div class="main-container-menu">
-      <MenuItem class="main-menu-box" />
+      <div class="main-logo">{{isCollapse?'WL':'WeiLan'}}</div>
+      <the-menu class="main-menu-box" />
     </div>
-    <div id="root-view" class="app-view-box" v-html="content"></div>
+    <!-- 右侧视图 -->
+    <div class="main-container-content">
+      <!-- 上部导航区 -->
+      <the-nav />
+      <!-- 子应用渲染区 -->
+      <div class="main-container-view">
+        <el-scrollbar class="wl-scroll">
+          <div id="root-view" class="app-view-box" v-html="content"></div>
+        </el-scrollbar>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import MenuItem from "@/components/menu.vue";
+import TheMenu from "@/components/TheMenu.vue";
+import TheNav from "@/components/TheNav.vue";
 
 export default {
-  name: "root-view",
+  name: "rootView",
   components: {
-    MenuItem
+    TheMenu,
+    TheNav
   },
   props: {
     loading: Boolean,
     content: String
+  },
+  computed: {
+    isCollapse() {
+      return this.$store.getters.is_collapse;
+    }
   }
 };
 </script>
@@ -31,18 +50,44 @@ body {
 }
 .main-container {
   display: flex;
+  width: 100%;
   height: 100%;
-  > .main-container-menu {
-    width: 200px;
-    height: 100%;
-    background-color: #545c64;
-    > .main-menu-box {
-      border: none;
+}
+.main-logo {
+  height: 60px;
+  background: #2a3f54;
+  text-align: center;
+  line-height: 60px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+}
+.main-container-content {
+  flex: 1;
+  display: flex;
+  flex-flow: column;
+  overflow: hidden;
+  > .main-container-view {
+    padding: 15px;
+    width: 100%;
+    height: calc(100% - 60px);
+    background: #f2f3f3;
+    box-sizing: border-box;
+    > .wl-scroll {
+      width: 100%;
+      height: 100%;
+      background: #fff;
+      border-radius: 4px;
+      .el-scrollbar__wrap {
+        overflow-x: hidden;
+      }
     }
-  }
-  > .app-view-box {
-    flex: 1;
-    padding: 12px;
+
+    .app-view-box {
+      width: 100%;
+      padding: 12px;
+      box-sizing: border-box;
+    }
   }
 }
 </style>
