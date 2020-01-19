@@ -16,7 +16,7 @@ export async function bootstrap() {
 
 export async function mount() {
   router = new VueRouter({
-    base: window.__POWERED_BY_QIANKUN__ ? "/report" : "/",
+    base: window.__POWERED_BY_QIANKUN__ ? "/app2" : "/",
     mode: "history",
     routes
   });

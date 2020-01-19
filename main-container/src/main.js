@@ -64,17 +64,17 @@ let msg = {
 registerMicroApps(
   [
     {
-      name: "module-basic-data",
+      name: "module-app1",
       entry: "//localhost:6651",
       render,
-      activeRule: genActiveRule("/basic"),
+      activeRule: genActiveRule("/app1"),
       props: msg
     },
     {
-      name: "module-report",
+      name: "module-app2",
       entry: "//localhost:6652",
       render,
-      activeRule: genActiveRule("/report"),
+      activeRule: genActiveRule("/app2"),
       props: msg
     }
   ],
@@ -98,7 +98,7 @@ registerMicroApps(
 );
 
 // 设置默认子应用
-setDefaultMountApp("/basic");
+setDefaultMountApp("/app1");
 // 第一个子应用加载完毕回调
 runAfterFirstMounted();
 // 启动微服务

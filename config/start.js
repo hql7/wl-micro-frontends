@@ -7,7 +7,7 @@ const fs = require('fs');
 const path = require('path');
 const util = require('util');
 const sub_app_ath = path.resolve();
-const sub_apps = fs.readdirSync(sub_app_ath).filter(i => /^module\-*|main/.test(i));
+const sub_apps = fs.readdirSync(sub_app_ath).filter(i => /^module|main/.test(i));
 
 console.log(`即将进入所有模块并启动服务：${JSON.stringify(sub_apps)} ing...`)
 
@@ -19,6 +19,7 @@ function start() {
     console.log(i, 'success', stdout)
     console.error(i, 'error', stderr)
   });
+  exec('start http://localhost:6650/');
 };
 start();
 

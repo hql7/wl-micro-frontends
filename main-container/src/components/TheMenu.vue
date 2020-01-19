@@ -17,7 +17,7 @@
         v-for="item of sub.children"
         :key="item.id"
         :index="item.id"
-        @click="goto('app-basic','/')"
+        @click="goto(sub.module, item.url)"
       >
         <span class="menu-item-title">{{item.title}}</span>
       </el-menu-item>
@@ -48,12 +48,12 @@ export default {
             {
               id: "1-1",
               title: "表格",
-              url: "/"
+              url: "/app1"
             },
             {
               id: "1-2",
               title: "日历",
-              url: "/about"
+              url: "/app1/about"
             }
           ]
         },
@@ -66,12 +66,12 @@ export default {
             {
               id: "2-1",
               title: "报表",
-              url: "/"
+              url: "/app2"
             },
             {
               id: "2-2",
               title: "穿梭框",
-              url: "/about"
+              url: "/app2/about"
             }
           ]
         }
