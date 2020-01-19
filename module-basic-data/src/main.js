@@ -12,13 +12,13 @@ Vue.config.productionTip = false;
 let router = null;
 let instance = null;
 
-export async function bootstrap(props = {}) {
-  Array.isArray(props.fns) && props.fns.map(i => {
-    Vue.prototype[i.name] = i[i.name]
+export async function bootstrap({ fns = [] } = {}) {
+  Array.isArray(fns) && fns.map(i => {
+    Vue.prototype[i.name] = i
   });
 }
 
-export async function mount() {
+export async function mount({ data = {} } = {}) {
   router = new VueRouter({
     base: window.__POWERED_BY_QIANKUN__ ? "/app1" : "/",
     mode: "history",
@@ -27,7 +27,7 @@ export async function mount() {
   instance = new Vue({
     router,
     store,
-    render: h => h(App)
+    render: h => h(App, { props: data })
   }).$mount("#app");
 }
 

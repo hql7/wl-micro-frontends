@@ -49,13 +49,11 @@ render();
 
 // 定义传入子应用的数据
 let msg = {
-  data: {
-    auth: false
-  },
+  data: store.getters,
   fns: [
-    {
-      name: "routerGo",
-      routerGo
+    routerGo,
+    function changeDataMsg(val) {
+      store.dispatch('send-data/changeMsg', val)
     }
   ]
 };
@@ -100,7 +98,9 @@ registerMicroApps(
 // 设置默认子应用
 setDefaultMountApp("/app1");
 // 第一个子应用加载完毕回调
-runAfterFirstMounted();
+runAfterFirstMounted(() => {
+  console.log(app)
+});
 // 启动微服务
 start({ prefetch: true });
 
