@@ -1,11 +1,13 @@
 <template>
   <div class="the-nav">
     <!-- 菜单折叠按钮 -->
-    <i
-      class="nav-icon"
-      :class="isCollapse?'el-icon-d-arrow-right':'el-icon-d-arrow-left'"
-      @click="setMenuCollapseStatus()"
-    ></i>
+    <div class="nav-handle-collapse">
+      <i
+        class="nav-icon"
+        :class="isCollapse?'el-icon-d-arrow-right':'el-icon-d-arrow-left'"
+        @click="setMenuCollapseStatus()"
+      ></i>
+    </div>
     <!-- 右侧操作区 -->
     <div class="nav-handle-box">
       <!-- 消息按钮 -->
@@ -75,15 +77,18 @@ export default {
 </script>
 
 <style lang="scss">
+@import "@/style/variables.scss";
+
 .the-nav {
   display: flex;
   justify-content: space-between;
-  height: 60px;
-  padding: 15px;
-  line-height: 30px;
-  background: #A3B6C6;
-  color: #fff;
-  box-shadow: #b2b2b2 1px 4px 5px 2px;
+  z-index: 1;
+  height: $header-height;
+  padding: $header-padding;
+  line-height: $header-height - ($header-padding * 2);
+  background: $header-background;
+  color: $header-color;
+  box-shadow: #c1c0c0 1px 4px 5px 2px;
   box-sizing: border-box;
 
   .nav-icon,

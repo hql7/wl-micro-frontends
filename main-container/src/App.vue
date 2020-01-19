@@ -34,6 +34,8 @@ export default {
 </script>
 
 <style lang="scss">
+@import "@/style/variables.scss";
+
 html,
 body {
   margin: 0;
@@ -54,7 +56,7 @@ body {
     padding: 15px;
     width: 100%;
     height: calc(100% - 60px);
-    background: #f2f3f3;
+    background: $main-base-color;
     box-sizing: border-box;
     > .wl-scroll {
       width: 100%;
