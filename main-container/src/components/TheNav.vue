@@ -77,8 +77,6 @@ export default {
 </script>
 
 <style lang="scss">
-@import "@/style/variables.scss";
-
 .the-nav {
   display: flex;
   justify-content: space-between;

@@ -28,15 +28,20 @@
 <script>
 import { mapGetters } from "vuex"; // 引入状态共享
 import { routerGo } from "@/library/js/util.js"; // 引入跨应用路由跳转
+import {
+  menu_background,
+  menu_color,
+  menu_active_color
+} from "@/style/variables.scss.js"; // 导入菜单样式变量
 
 export default {
   name: "theMenu",
   data() {
     return {
       theme_menu: {
-        background: "#2A3F54",
-        text: "#fff",
-        active_text: "#fff"
+        background: menu_background,
+        text: menu_color,
+        active_text: menu_active_color
       }, // 菜单主题
       menu_data: [
         {

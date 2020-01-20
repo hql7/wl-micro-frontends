@@ -1,5 +1,6 @@
 
 const port = 6650; // dev port
+let styleVariables = require('./src/style/variables.scss.js');
 
 module.exports = {
   // publicPath: './',
@@ -16,4 +17,13 @@ module.exports = {
       'Access-Control-Allow-Origin': '*',
     }
   },
+  css: {
+    loaderOptions: {
+      sass: {
+        prependData: Object.keys(styleVariables)
+          .map(k => `\$${k.replace('_', '-')}: ${styleVariables[k]};`)
+          .join('\n')
+      }
+    }
+  }
 };
