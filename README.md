@@ -125,7 +125,7 @@
                 
             </div>
         <!-- 子应用盒子 -->
-        <div id="root-view" class="app-view-box" v- html="content"></div>
+        <div id="root-view" class="app-view-box" v-html="content"></div>
     </div>
     </template>
 
