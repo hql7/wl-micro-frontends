@@ -1,3 +1,5 @@
 import Vue from "vue";
-import WlUi from "./index";
-Vue.use(WlUi);
+import FtUi from "./index";
+import VueClipboard from 'vue-clipboard2';
+Vue.use(FtUi);
+Vue.use(VueClipboard);
