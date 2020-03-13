@@ -12,10 +12,15 @@ Vue.config.productionTip = false;
 let router = null;
 let instance = null;
 
-export async function bootstrap({ fns = [] } = {}) {
-  Array.isArray(fns) && fns.map(i => {
-    Vue.prototype[i.name] = i
-  });
+export async function bootstrap({ components, utils, emitFnc }) {
+  // 注册主应用下发的组件
+  Vue.use(components);
+  // 把工具函数挂载在vue $mainUtils对象
+  Vue.prototype.$mainUtils = utils;
+  // 把mainEmit函数一一挂载
+  Object.keys(emitFnc).forEach(i => {
+    Vue.prototype[i] = emitFnc[i]
+  })
 }
 
 export async function mount({ data = {} } = {}) {

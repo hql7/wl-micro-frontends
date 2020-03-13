@@ -51,7 +51,7 @@ body {
   flex-flow: column;
   overflow: hidden;
   > .main-container-view {
-    padding: 15px;
+    padding: 8px;
     width: 100%;
     height: calc(100% - 60px);
     background: $main-base-color;

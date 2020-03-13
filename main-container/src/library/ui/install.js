@@ -1,3 +1,3 @@
 import Vue from "vue";
-import FtUi from "./index";
-Vue.use(FtUi);
+import WlUi from "./index";
+Vue.use(WlUi);

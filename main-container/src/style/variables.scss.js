@@ -10,4 +10,10 @@ module.exports = {
   'menu_active_color': `#ffd04b`,
   // 主视图区样式变量
   'main_base_color': `#f2f3f3`,
+  'main_body_padding': '8px',
+  'space_n': '8px',
+  'space_s': '10px',
+  'space_m': '12px',
+  'space_l': '15px',
+  'border_color_eee': '#EBEEF5'
 }

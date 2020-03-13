@@ -15,15 +15,8 @@ function routerGo(href = '/', title = null, stateObj = {}) {
   window.history.pushState(stateObj, title, href);
 }
 
-/**
- * 路由监听
- * @param {String} routerPrefix 路由前缀
- */
-function genActiveRule(routerPrefix) {
-  return location => location.pathname.startsWith(routerPrefix);
-}
+
 
 export {
-  routerGo, // 跨应用路由跳转
-  genActiveRule, // 路由监听
+  routerGo // 跨应用路由跳转
 }

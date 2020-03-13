@@ -1,8 +1,10 @@
 
-import FtContainer from "./ft-container/";
-import FtContextmenu from "./ft-contextmenu/";
+import WlContainer from "./wl-container";
+import WlContextmenu from "./wl-contextmenu";
+import WlFadein from "./wl-fadein";
+import WlScroll from "./wl-scroll";
 
-const components = [FtContainer, FtContextmenu];
+const components = [WlContainer, WlContextmenu, WlFadein, WlScroll];
 
 const install = function (Vue) {
   components.forEach(component => {
@@ -16,6 +18,8 @@ if (typeof window !== "undefined" && window.Vue) {
 
 export default {
   install,
-  FtContainer,
-  FtContextmenu
+  WlContainer,
+  WlContextmenu,
+  WlFadein,
+  WlScroll
 };

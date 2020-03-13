@@ -15,9 +15,26 @@ import {
 import "./plugins/element.js";
 // 导入封装后的ui组件
 import "./library/ui/install";
-// 导入公共工具函数
-import { genActiveRule, routerGo } from "./library/js/util"
+// 导入路由监听函数
+import { genActiveRule } from "./util";
+/**
+ * 主应用公共资源下发子应用
+ */
+// 导入主应用ui库
+import LibraryUi from "./library/ui/";
+// 导入主应用工具类库
+import LibraryJs from "./library/js";
+// 导入主应用需要下发的emit函数
+import * as childEmit from "./util/childEmit"
+// 定义传入子应用的数据
+let msg = {
+  data: store.getters,         // 从主应用仓库读出的数据
+  components: LibraryUi,       // 从主应用读出的组件库
+  utils: LibraryJs,            // 从主应用读出的工具类库
+  emitFnc: childEmit           // 从主应用下发emit函数来收集子应用反馈
+};
 
+// 主应用渲染函数
 let app = null;
 function render({ appContent, loading } = {}) {
   if (!app) {
@@ -46,17 +63,6 @@ function render({ appContent, loading } = {}) {
   }
 };
 render();
-
-// 定义传入子应用的数据
-let msg = {
-  data: store.getters,
-  fns: [
-    routerGo,
-    function changeDataMsg(val) {
-      store.dispatch('send-data/changeMsg', val)
-    }
-  ]
-};
 
 //注册子应用
 registerMicroApps(
@@ -99,7 +105,7 @@ registerMicroApps(
 setDefaultMountApp("/app1");
 // 第一个子应用加载完毕回调
 runAfterFirstMounted(() => {
-  console.log(app)
+  // console.log(app)
 });
 // 启动微服务
 start({ prefetch: true });

@@ -1,6 +1,6 @@
 <template>
-  <div class="ft-container">
-    <el-scrollbar class="ft-container-scroll">
+  <div class="wl-container">
+    <el-scrollbar class="wl-container-scroll">
       <slot></slot>
     </el-scrollbar>
   </div>
@@ -8,12 +8,12 @@
 
 <script>
 export default {
-  name: "ft-container"
+  name: "wl-container"
 };
 </script>
 
 <style>
-.ft-container {
+.wl-container {
   position: absolute;
   top: 0;
   right: 0;
