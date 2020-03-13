@@ -3,14 +3,18 @@
 
 ### 微前端 qiankun
 
-微前端是什么、为什么要做微前端、qiankun是什么这些笔者将不再叙述。   
+微前端是什么、为什么要做微前端、qiankun是什么这些笔者将不再叙述。（文末有彩蛋~）     
 传送门：[可能是你见过最完善的微前端解决方案](https://yq.aliyun.com/articles/715922)  &  [qiankun](https://github.com/umijs/qiankun)     
 下面直接进入实战教程。
 
 ## 实战教程
 
-鉴于qiankun文档只有寥寥十几行，这里做一个尽量详细的实战示例描述。   
-另本项目作为长期构建项目，并不限于本文所讲基础应用，但与微前端构建太大相关的不再一一说明，有兴趣clone一一探查。
+鉴于qiankun文档只有寥寥十几行，这里做一个尽量详细的实战示例描述:
+1. 微前端主应用与子应用如何构建。
+2. 主应用与子应用通信
+3. 主应用资源下发至子应用
+4. 各应用间路由管理
+5. 公共资源处理
 
 ### 构建主应用
 
@@ -191,10 +195,8 @@ let router = null;
 let instance = null;
 
 // 导出子应用生命周期 挂载前
-export async function bootstrap(props = {}) {
-  Array.isArray(props.fns) && props.fns.map(i => {
-    Vue.prototype[i.name] = i[i.name]
-  });
+export async function bootstrap(props) {
+    console.log(props)
 }
 
 // 导出子应用生命周期 挂载前 挂载后
@@ -342,11 +344,9 @@ qiankun对于props的应用类似于react框架的父子组件通信，传入dat
             auth: false
         },
         fns: [
-                {
-                    name: "LOGOUT_",
-                    LOGOUT_(data) {
-                        alert('父应用返回信息：' + data)
-                    }
+                
+                function LOGOUT_(data) {
+                    alert('父应用返回信息：' + data)
                 }
             ]
       };
@@ -377,6 +377,127 @@ qiankun对于props的应用类似于react框架的父子组件通信，传入dat
   ...
 ```
 我们这里在bootstrap函数里将接收到的props参数内的函数挂在vue原型上方便使用，你也可以在其他导出的生命周期函数内得到props并按照你的设想去处理。
+
+### 主应用将自身资源下发给子应用
+
+在真实项目使用中，单纯的主、子应用数据与回调函数传递无法满足需求。通常还会有一部门主应用的资源或者公共资源可以下放给主应用使用！
+
+在我的[github](https://github.com/hql7)微前端qiankun项目[wl-micro-frontends](https://github.com/hql7/wl-micro-frontends)中，我是这么处理的：将主应用msg分成`data、components、utils、emitFnc`分别代表各类需要下发给子应用的资源！
+> 此时经过改造后的主应用main.js是这样的：
+```
+   /**
+     * 主应用公共资源下发子应用
+     */
+    // 导入主应用ui库
+    import LibraryUi from "./library/ui/";
+    // 导入主应用工具类库
+    import LibraryJs from "./library/js";
+    // 导入主应用需要下发的emit函数
+    import * as childEmit from "./util/childEmit"
+    // 定义传入子应用的数据
+    let msg = {
+      data: store.getters,         // 从主应用仓库读出的数据
+      components: LibraryUi,       // 从主应用读出的组件库
+      utils: LibraryJs,            // 从主应用读出的工具类库
+      emitFnc: childEmit           // 从主应用下发emit函数来收集子应用反馈
+    };
+    
+    <!--注册-->
+    registerMicroApps(
+      [
+        {
+          name: "module-app1",
+          entry: "//localhost:6651",
+          render,
+          activeRule: genActiveRule("/app1"),
+          props: msg
+        },
+        {
+          name: "module-app2",
+          entry: "//localhost:6652",
+          render,
+          activeRule: genActiveRule("/app2"),
+          props: msg
+        }
+      ]
+      )
+```
+ *详见[主应用main.js](https://github.com/hql7/wl-micro-frontends/blob/master/main-container/src/main.js)
+ 
+> 处理完主应用的下发逻辑，下面再改造一下子应用的接收逻辑
+在子应用main.js中写下这段代码：因为bootstrap在子应用的生命周期只会调用一次，因此我们把注册组件和挂载函数放在这里
+```
+export async function bootstrap({ components, utils, emitFnc }) {
+  // 注册主应用下发的组件
+  Vue.use(components);
+  // 把工具函数挂载在vue $mainUtils对象
+  Vue.prototype.$mainUtils = utils;
+  // 把mainEmit函数一一挂载
+  Object.keys(emitFnc).forEach(i => {
+    Vue.prototype[i] = emitFnc[i]
+  })
+}
+```
+而主应用传回的data信息我们想在子应用vue实例化时传递进去，因此在mount生命周期使用
+```
+export async function mount({ data = {} } = {}) {
+  router = new VueRouter({
+    base: window.__POWERED_BY_QIANKUN__ ? "/app1" : "/",
+    mode: "history",
+    routes
+  });
+  instance = new Vue({
+    router,
+    store,
+    render: h => h(App, { props: data })
+  }).$mount("#app");
+}
+```
+ *详见[子应用main.js](https://github.com/hql7/wl-micro-frontends/blob/master/module-basic-data/src/main.js)
+
+好，道理我们都懂，那么到底有没有效果呢，下面我们就在子应用中使用下主应用下发的组件和函数来验证一下：
+> 在子应用module-basic-data的Home.vue中添加以下代码：
+```
+    <template>
+      <div class="basic-home">
+        <el-button size="small" type="primary" @click="layout.fadein = true">
+            点击调用主应用下发的【fadein】组件
+        </el-button>
+        <h4>树形表格</h4>
+        <WlTable></WlTable>
+        <wl-fadein :show.sync="layout.fadein">
+          <span slot="header">表单头部</span>
+          <div slot="footer">
+            <el-button size="small" @click="layout.fadein = false">取 消</el-button>
+            <el-button size="small" type="primary" @click="layout.fadein = false">确 定</el-button>
+          </div>
+        </wl-fadein>
+      </div>
+    </template>
+    
+    <script>
+    import WlTable from "@/components/wl-table.vue";
+    
+    export default {
+      name: "basic-home",
+      components: { WlTable },
+      data() {
+        return {
+          layout: {
+            fadein: false
+          }
+        };
+      },
+      created(){
+        console.log(this.$mainUtils)
+        console.log(this.changeDataMsg)
+      }
+    };
+    </script>
+
+```
+好，我们能够看到主应用下发的fadein组件已经能够使用了，这里有个小bug，我在主应用导出的组件信息中，附带了主应用的vue注册信息，而Vue.use()是在子应用，可能两个应用的vue版本不一致而引发一些小报错（你可以修改下library/ui/index.js只导出组件列表）, 并且在created中也打印出来了我们从主应用下发下来的工具函数和emit函数，成功！~
+ * 详见[子应用Home.vue](https://github.com/hql7/wl-micro-frontends/blob/master/module-basic-data/src/views/Home.vue)
 
 ### 各应用间路由管理
 1.在主应用内设置路由监控
@@ -422,30 +543,79 @@ window.history.pushState({}, title, href);
 
 ### 公共资源处理
 
-1.开发环境
-
+1.开发过程中
+当我们有一个对多个项目、多个团队提供公共资源支持的仓库需求。
 开发环境建立公共资源的目的，是减少开发时的重复劳作和多方修改带来的维护难题。        
 相应的，修改public-lib内资源一定要有影响其他应用的觉悟并严格按照设计规范：向上兼容和可扩展性。
 
+> 注意
+1. 放入此处的文件是否满足提供多项目使用的条件
+
+2. 此项目的文件改动必须向上兼容，不允许再未经讨论的情况下进行大的重构
+
+3. 各应用中library本质上还是本仓库中的一个文件夹，提交项目代码时正常提交即可，但是需要手动将此目录推送至公共资源仓库
+
 > 工程结构
 ```
-    big-repo
-    |-----------app1
+    big-repo                            (微前端大仓库)
+    |-----------app1                    (或者将每个应用作为一个仓库都可以)
     |           |------src
-    |                   |------public-lib （开发中）
+    |                   |------library （开发中）
     |-----------app2
     |           |------src
-    |                   |------public-lib （开发中）
+    |                   |------library （开发中）
     |-----------app3
     |           |------src
-    |                    |-----public-lib （开发中）
+    |                    |-----library （开发中）
     |
-    |-----------public-lib（只是作为中继站的类型同步三个app内的public-lib）       
+    
+    library                             （公共资源仓库）
+   
 ```
-使用`git subtree`拆分子仓库，使每个子应用下的public-lib目录与根public-lib建立联系，并能完成互相推送。
+下面就使用git subtree来将每个应用的library
+1. 将library仓库添加至应用仓库的src/library位置: 在项目仓库根路径执行以下命令
+```
+ git subtree add --prefix=app1/src/library git@**.***.1.***:****.FE/library.git master --squash
+```
+执行完毕，应用仓库app1/src/路径下会出现library文件夹，--prefix=后面即是路径，你可以自由定制
+
+2. 拉取公共仓库代码（如果公共仓库有更新）
+```
+ git subtree pull --prefix=src/library git@**.***.1.***:****.FE/library.git master --squash
+```
+3. 将app1/src/library下的内容改动推送至公共资源仓库
+```
+ git subtree push --prefix=src/library git@**.***.1.***:****.FE/library.git master
+```
+注意，你的项目代码正常推送即可，app1/src/library作为项目下的一个文件夹无需特殊处理（方便！）
+
+4. 说到方便，每次命令都需要写公共资源仓库git@**.***.1.***:****.FE/library.git地址是贼不方便，改！
+将先将子仓库地址添加为remote：
+```
+ git remote add -f library git@**.***.1.***:****.FE/library.git
+```
+5. 此后再提交即可使用以下精简命令
+```
+  git subtree add --prefix=src/library library master --squash
+
+  git subtree pull --prefix=src/library library master --squash
+  
+  git subtree push --prefix=src/library library master
+```
 
 2.生产环境
-  公共引用拆分打包待续
+  在主应用引入，子应用判断是否是qiankun环境，如果是，则忽略打包第三方依赖
+  vue.config.js中：
+  ```
+    configureWebpack: {
+        externals: process.env.NODE_ENV === 'production' ?
+            {
+                axios: "axios",
+                "chart.js": "Chart",
+                vue: "Vue"
+            } : {}
+    },
+  ```
 
 ### 一个简单的基于qiankun和vue的实战示例就这么结束啦
 
