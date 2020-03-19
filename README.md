@@ -1,7 +1,22 @@
+# wl-micro-frontends [wl-qiankun]
+
 本项目采用 vue + qiankun 实践微前端落地。       
 同时qiankun是一个开放式微前端架构，支持当前三大前端框架甚至jq等其他项目无缝接入。
 
-### 微前端 qiankun
+### 项目启动
+```
+npm run cinit
+npm run init
+下载依赖，因为是批量下载所有应用下的依赖，推荐cinit节省下载时间
+
+npm run serve 
+运行项目，同样，批量运行所有应用会耗时较久，浏览器页面自动打开后请稍家等待，然后刷新即可
+
+npm run build
+打包项目，打包所有应用
+```
+
+## 微前端 qiankun
 
 微前端是什么、为什么要做微前端、qiankun是什么这些笔者将不再叙述。（文末有彩蛋~）     
 传送门：[可能是你见过最完善的微前端解决方案](https://yq.aliyun.com/articles/715922)  &  [qiankun](https://github.com/umijs/qiankun)     
