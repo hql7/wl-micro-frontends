@@ -9,7 +9,8 @@
       <!-- 子应用渲染区 -->
       <div class="main-container-view">
         <el-scrollbar class="wl-scroll">
-          <div id="root-view" class="app-view-box" v-html="content"></div>
+          <div id="sub-app-layout" class="app-view-box" v-html="content"></div>
+          <div v-if="loading" class="subapp-loading"></div>
         </el-scrollbar>
       </div>
     </div>
@@ -72,5 +73,8 @@ body {
       box-sizing: border-box;
     }
   }
+}
+.subapp-loading {
+  background: url("~@/assets/images/loading.gif");
 }
 </style>

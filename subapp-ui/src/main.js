@@ -12,7 +12,7 @@ Vue.config.productionTip = false;
 let router = null;
 let instance = null;
 
-export async function bootstrap({ components, utils, emitFnc }) {
+export async function bootstrap({ components, utils, emitFnc, pagers }) {
   // 注册主应用下发的组件
   Vue.use(components);
   // 把工具函数挂载在vue $mainUtils对象
@@ -20,12 +20,13 @@ export async function bootstrap({ components, utils, emitFnc }) {
   // 把mainEmit函数一一挂载
   Object.keys(emitFnc).forEach(i => {
     Vue.prototype[i] = emitFnc[i]
-  })
+  });
+  Vue.prototype.$pagers = pagers;
 }
 
 export async function mount({ data = {} } = {}) {
   router = new VueRouter({
-    base: window.__POWERED_BY_QIANKUN__ ? "/app1" : "/",
+    base: window.__POWERED_BY_QIANKUN__ ? "/ui" : "/",
     mode: "history",
     routes
   });

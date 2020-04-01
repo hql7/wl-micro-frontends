@@ -1,4 +1,6 @@
-# module-basic-data
+# subapp-ui
+
+微前端UI组件子应用
 
 ## Project setup
 ```

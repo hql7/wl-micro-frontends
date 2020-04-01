@@ -27,12 +27,18 @@ import LibraryJs from "./library/js";
 // 导入主应用需要下发的emit函数
 import * as childEmit from "./util/childEmit"
 // 定义传入子应用的数据
+import pagers from "./util/pagers"
+// 导入应用间通信介质：呼机
 let msg = {
   data: store.getters,         // 从主应用仓库读出的数据
   components: LibraryUi,       // 从主应用读出的组件库
   utils: LibraryJs,            // 从主应用读出的工具类库
-  emitFnc: childEmit           // 从主应用下发emit函数来收集子应用反馈
+  emitFnc: childEmit,          // 从主应用下发emit函数来收集子应用反馈
+  pagers                       // 从主应用下发应用间通信呼机
 };
+
+import { pagersWatcher } from "./util/pagers"
+pagersWatcher()
 
 // 主应用渲染函数
 let app = null;
@@ -68,17 +74,17 @@ render();
 registerMicroApps(
   [
     {
-      name: "module-app1",
+      name: "subapp-ui",
       entry: "//localhost:6651",
       render,
-      activeRule: genActiveRule("/app1"),
+      activeRule: genActiveRule("/ui"),
       props: msg
     },
     {
-      name: "module-app2",
+      name: "subapp-blog",
       entry: "//localhost:6652",
       render,
-      activeRule: genActiveRule("/app2"),
+      activeRule: genActiveRule("/blog"),
       props: msg
     }
   ],
@@ -102,16 +108,12 @@ registerMicroApps(
 );
 
 // 设置默认子应用
-setDefaultMountApp("/app1");
+setDefaultMountApp("/ui");
 // 第一个子应用加载完毕回调
-runAfterFirstMounted(() => {
-  // console.log(app)
+runAfterFirstMounted((app) => {
+  console.log(app)
 });
 // 启动微服务
 start({ prefetch: true });
 
-/* new Vue({
-  router,
-  store,
-  render: h => h(App)
-}).$mount("#app"); */
+

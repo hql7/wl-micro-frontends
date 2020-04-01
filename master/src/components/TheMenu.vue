@@ -7,7 +7,7 @@
     :background-color="themeMenu.background"
     :active-text-color="themeMenu.active_text"
   >
-   <div class="the-menu-logo">{{is_collapse?'WL':'WL微前端项目'}}</div>
+    <div class="the-menu-logo">{{is_collapse?'WL':'WL微前端项目'}}</div>
     <el-submenu v-for="sub of menu_data" :key="sub.id" :index="sub.id">
       <template slot="title">
         <i class="menu-icon" :class="sub.icon"></i>
@@ -46,37 +46,37 @@ export default {
       menu_data: [
         {
           id: "1",
-          title: "子应用一",
+          title: "wl-ui组件",
           icon: "el-icon-monitor",
-          module: "app1",
+          module: "subapp-ui",
           children: [
             {
               id: "1-1",
               title: "表格",
-              url: "/app1"
+              url: "/ui"
             },
             {
               id: "1-2",
               title: "日历",
-              url: "/app1/about"
+              url: "/ui/about"
             }
           ]
         },
         {
           id: "2",
-          title: "子应用二",
+          title: "博客",
           icon: "el-icon-date",
-          module: "app2",
+          module: "subapp-blog",
           children: [
             {
               id: "2-1",
               title: "报表",
-              url: "/app2"
+              url: "/blog"
             },
             {
               id: "2-2",
               title: "穿梭框",
-              url: "/app2/about"
+              url: "/blog/about"
             }
           ]
         }

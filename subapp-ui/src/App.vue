@@ -54,8 +54,7 @@ export default {
      * 通知父应用变天了
      */
     callParentChange(msg) {
-      this.changeDataMsg(msg);
-      console.log(this.msg);
+      this.$pagers.next(msg)
     }
   }
 };

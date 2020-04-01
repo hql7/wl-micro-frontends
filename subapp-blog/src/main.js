@@ -20,7 +20,7 @@ export async function bootstrap({ fns = [] } = {}) {
 
 export async function mount({ data = {} } = {}) {
   router = new VueRouter({
-    base: window.__POWERED_BY_QIANKUN__ ? "/app2" : "/",
+    base: window.__POWERED_BY_QIANKUN__ ? "/blog" : "/",
     mode: "history",
     routes
   });
