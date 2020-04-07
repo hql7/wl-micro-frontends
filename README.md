@@ -322,7 +322,7 @@ module.exports = {
 ```
 经过上述改造，一个简易的微前端环境就草草建成了，是不是很简单，你是不是已经跃跃欲试了？
 
-直接上手跑代码 --> [wl-qiankun](https://github.com/hql7/wl-qiankun)
+直接上手跑代码 --> [wl-micro-frontends(wl-qiankun)](https://github.com/hql7/wl-micro-frontends)
 
 当然，一个基础的微前端架子建成后，我们还有一些无法绕过的问题要处理，下面将其中部分逐一讲解。
 
@@ -477,7 +477,7 @@ qiankun对于props的应用类似于react框架的父子组件通信，传入dat
 4. 使用local或者window传递
 5. 等
 
-### 主应用将自身资源下发给子应用
+## 主应用将自身资源下发给子应用
 
 在真实项目使用中，单纯的主、子应用数据与回调函数传递无法满足需求。通常还会有一部门主应用的资源或者公共资源可以下放给主应用使用！
 
@@ -598,7 +598,7 @@ export async function mount({ data = {} } = {}) {
 好，我们能够看到主应用下发的fadein组件已经能够使用了，这里有个小bug，我在主应用导出的组件信息中，附带了主应用的vue注册信息，而Vue.use()是在子应用，可能两个应用的vue版本不一致而引发一些小报错（你可以修改下library/ui/index.js只导出组件列表）, 并且在created中也打印出来了我们从主应用下发下来的工具函数和emit函数，成功！~
  * 详见[子应用Home.vue](https://github.com/hql7/wl-micro-frontends/blob/master/module-basic-data/src/views/Home.vue)
 
-### 各应用间路由基础管理
+## 各应用间路由基础管理
 1.在主应用内设置路由监控
 ```
 /**
@@ -640,7 +640,7 @@ this.$router.push() 等
 window.history.pushState({}, title, href);
 ```
 
-### 公共资源处理
+## 公共资源处理
 
 1.开发过程中
 当我们有一个对多个项目、多个团队提供公共资源支持的仓库需求。
@@ -716,12 +716,19 @@ window.history.pushState({}, title, href);
     },
   ```
 
-### 一个简单的基于qiankun和vue的实战示例就这么结束啦
-
+## 结语
+  一个简单的基于qiankun和vue的实战示例就这么结束啦。    
   当然我们需要考虑的还有很多，但是我前天刚买的狼叔的[【前端架构：从入门到微前端】](https://item.jd.com/12621088.html)告诉我们，架构是一件持续性和渐进式的事儿，其他的后续再逐渐丰富吧~~~
->另附Github上的demo地址:[wl-qiankun](https://github.com/hql7/wl-qiankun)。
+>另附Github上的demo地址:[wl-micro-frontends(wl-qiankun)](https://github.com/hql7/wl-micro-frontends)
 
 不想看我在这罗里吧嗦的直接代码跑起吧~，如果你觉得还有一点点可以，就请留个star吧~~
+
+## Donate & 咖啡
+如果你有心，可以请作者喝杯咖啡，或者推荐一份好工作
+<div>
+  <img src="http://wlsy.oss-cn-hangzhou.aliyuncs.com/apply.jpg" height="330" width="220" />
+  <img src="http://wlsy.oss-cn-hangzhou.aliyuncs.com/wx.jpg" height="330" width="220" />
+</div>
 
 ### 后续*花絮
 
