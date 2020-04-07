@@ -28,7 +28,7 @@ export async function bootstrap({ components, utils, emitFnc, pager }) {
   })
   Vue.prototype.$pager = pager;
 }
-
+ 
 export async function mount({ data }) {
   router = new VueRouter({
     base: window.__POWERED_BY_QIANKUN__ ? "/ui" : "/",

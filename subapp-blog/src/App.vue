@@ -9,19 +9,14 @@
       <el-button-group class="right">
         <el-button type="primary" size="medium" @click="routerChange('/')">报表</el-button>
         <el-button type="primary" size="medium" @click="routerChange('/about')">穿梭框</el-button>
-        <el-button type="primary" size="medium" @click="toAppReport('/app1/')">表格</el-button>
-        <el-button type="primary" size="medium" @click="toAppReport('/app1/about')">日历</el-button>
+        <el-button type="primary" size="medium" @click="toAppReport('/ui/')">表格</el-button>
+        <el-button type="primary" size="medium" @click="toAppReport('/ui/about')">日历</el-button>
       </el-button-group>
     </div>
     <div class="parent-child-communication">
       <h3>父子应用通信：</h3>
-      <span>{{msg}}</span>
-      <el-button
-        class="right"
-        type="primary"
-        size="medium"
-        @click="callParentChange('但若不见你，阳光也无趣')"
-      >通知父应用变天了</el-button>
+      <span>{{myMsg}}</span>
+      <el-button class="right" type="primary" size="medium" @click="callParentChange()">通知父应用变天了</el-button>
     </div>
     <router-view />
   </div>
@@ -32,6 +27,14 @@ export default {
   name: "report-app",
   props: {
     msg: String
+  },
+  data() {
+    return {
+      myMsg: ""
+    };
+  },
+  created() {
+    this.myMsg = this.msg;
   },
   methods: {
     /**
@@ -48,14 +51,17 @@ export default {
      * url 路由地址
      */
     toAppReport(url) {
-      this.routerGo(url);
+      this.$mainUtils.routerGo(url);
     },
     /**
      * 通知父应用变天了
      */
-    callParentChange(msg) {
-      this.changeDataMsg(msg);
-      console.log(this.msg);
+    callParentChange() {
+      this.myMsg = "倘若有你，西湖一路无雨";
+      this.$pager.next({
+        from: "subapp-blog",
+        token: "倘若有你，西湖一路无雨"
+      });
     }
   }
 };

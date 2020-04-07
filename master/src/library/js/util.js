@@ -4,7 +4,6 @@
  * des: 公共工具类
  */
 
-
 /**
  * 跨应用路由跳转
  * @param {String} href url地址
@@ -14,8 +13,6 @@
 function routerGo(href = '/', title = null, stateObj = {}) {
   window.history.pushState(stateObj, title, href); 
 }
-
-
 
 export {
   routerGo // 跨应用路由跳转

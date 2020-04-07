@@ -24,7 +24,8 @@ import { genActiveRule } from "./util";
 import LibraryUi from "./library/ui/";
 // 导入主应用工具类库
 import LibraryJs from "./library/js";
-// 导入主应用需要下发的emit函数
+console.log(LibraryJs)
+// 导入主应用需要下发的emit函数 
 import * as childEmit from "./util/childEmit"
 // 定义传入子应用的数据
 import pager from "./util/pager"
