@@ -22,15 +22,17 @@ npm run build
 传送门：[可能是你见过最完善的微前端解决方案](https://yq.aliyun.com/articles/715922)  &  [qiankun](https://github.com/umijs/qiankun)     
 下面直接进入实战教程。
 
-## 实战教程
+### 实战教程目录详解
 
 鉴于qiankun文档只有寥寥十几行，这里做一个尽量详细的实战示例描述:
-1. 微前端主应用与子应用如何构建。
-2. 主应用与子应用通信
-3. 主应用资源下发至子应用
-4. 各应用间路由管理
-5. 公共资源处理
+1. [x][微前端主应用与子应用如何构建](#微前端主应用与子应用如何构建)。
+2. [x][主应用与子应用通信(静态，无法监测到值变化)](#主应用与子应用通信(静态，无法监测到值变化))
+3. [x][主、子应用间动态通信(动态，各应用间实时监听，同步数据)](#主、子应用间动态通信(动态，各应用间实时监听，同步数据))
+4. [x][主应用资源下发至子应用](#主应用将自身资源下发给子应用)
+5. [x][各应用间路由基础管理](#各应用间路由基础管理)
+6. [x][公共资源处理](#公共资源处理)
 
+## 微前端主应用与子应用如何构建
 ### 构建主应用
 
 1. 创建一个主项目工程目录
@@ -324,6 +326,7 @@ module.exports = {
 
 当然，一个基础的微前端架子建成后，我们还有一些无法绕过的问题要处理，下面将其中部分逐一讲解。
 
+## 主应用与子应用通信(静态，无法监测到值变化)
 ### 父子应用通信
   在上述所建微前端应用中，父子间的通信是极其普遍且无法绕过的需求，而qiankun在这方面当然有所考虑。
 > 在上述构建项目步骤中，有一步是在主应用main.js注册子应用：
@@ -349,7 +352,7 @@ module.exports = {
 
 qiankun对于props的应用类似于react框架的父子组件通信，传入data数据供自组件使用，传入fn函数给子组件触发向上回调。
 
- 按照这个思路我们将主应用的main.js和子应用的main.js都改造一番：
+ 按照这个思路我们将主应用的main.js和子应用的main.js都改造一番（此改造会在后续主应用下发子应用资源章节重构）：
 > 改造后的主应用main.js
 ```
     ...
@@ -392,6 +395,87 @@ qiankun对于props的应用类似于react框架的父子组件通信，传入dat
   ...
 ```
 我们这里在bootstrap函数里将接收到的props参数内的函数挂在vue原型上方便使用，你也可以在其他导出的生命周期函数内得到props并按照你的设想去处理。
+
+## 主、子应用间动态通信(动态，各应用间实时监听，同步数据)
+
+经过上述处理后我们仍会遇到一个问题：即需要改变状态的数据如果通信，上面只是在注册子应用时传递了一次数据，而数据改变后又不能再注册一遍子应用。这个时候就需要应用间动态通信了，比如处理主应用登陆后的用户身份改变，或者token之类。
+这个问题是考虑微前端架构的人都会遇到，当然qiankun官方也在日程上规划的有官方通信机制，但是鉴于一次又一次的时间推迟及维护人手短缺，这里本文作者使用[rxjs](https://rxjs.dev/guide/subject)来作为应用间通信的方案。
+
+> 因为只使用rxjs解决应用间通信的需求，因此处理十分简单
+1. 先在主应用下载并引入rxjs；并创建我们的‘呼机’
+  ```
+    import { Subject } from "rxjs"; // 按需引入减少依赖包大小
+
+    const pager = new Subject();
+
+    export default pager;
+
+  ```
+2. 然后在主应用main.js引入并注册呼机，以及将呼机下发给子应用
+  ```
+    import pager from "./util/pager"           // 导入应用间通信介质：呼机
+
+    pager.subscribe(v => {                     // 在主应用注册呼机监听器，这里可以监听到其他应用的广播
+      console.log(`监听到子应用${v.from}发来消息：`, v)
+      store.dispatch('app/setToken', v.token)  // 这里处理主应用监听到改变后的逻辑
+    })
+
+    let msg = {                                // 结合下章主应用下发资源给子应用，将pager作为一个模块传入子应用
+      data: store.getters,                     // 从主应用仓库读出的数据
+      components: LibraryUi,                   // 从主应用读出的组件库
+      utils: LibraryJs,                        // 从主应用读出的工具类库
+      emitFnc: childEmit,                      // 从主应用下发emit函数来收集子应用反馈
+      pager                                    // 从主应用下发应用间通信呼机
+    };
+    registerMicroApps(                         // 注册子应用
+      [
+        {
+          name: "subapp-ui",
+          entry: "//localhost:6651",
+          render,
+          activeRule: genActiveRule("/ui"),
+          props: msg                           // 将上面数据传递给子应用
+        }
+      ])
+  ```
+3. 在子应用中注册呼机
+  ```
+    export async function bootstrap({ components, utils, emitFnc, pager }) {
+      Vue.use(components);                     // 注册主应用下发的组件
+      
+      Vue.prototype.$mainUtils = utils;        // 把工具函数挂载在vue $mainUtils对象
+      
+      Object.keys(emitFnc).forEach(i => {      // 把mainEmit函数一一挂载
+        Vue.prototype[i] = emitFnc[i]
+      });
+      
+      pager.subscribe(v => {                    // 在子应用注册呼机监听器，这里可以监听到其他应用的广播
+        console.log(`监听到子应用${v.from}发来消息：`, v)
+        // store.dispatch('app/setToken', v.token)   // 在子应用中监听到其他应用广播的消息后处理逻辑
+      })
+      Vue.prototype.$pager = pager;             // 将呼机挂载在vue实例
+    }
+  ```
+4. 在各应用中使用呼机动态传递信息
+  ```
+    methods: {                                  // 在某个应用里调用.next方法更新数据，并传播给其他应用
+      callParentChange() {
+        this.myMsg = "但若不见你，阳光也无趣";
+        this.$pager.next({
+          from: "subapp-ui",
+          token: "但若不见你，阳光也无趣"
+        });
+      }
+    }
+  ```
+经过上述4个步骤，你将在控制台看到我们在应用注册呼机检测器里打印的数据，它将是各应用实时同步，至此我们的应用间通信已经完成，简单高效。   
+
+这里还有其他应用间通信方案：    
+1. 等待qiankun官方通信机制
+2. 使用event bus等技术栈耦合的方法
+3. 使用观察者/发布订阅
+4. 使用local或者window传递
+5. 等
 
 ### 主应用将自身资源下发给子应用
 
@@ -514,7 +598,7 @@ export async function mount({ data = {} } = {}) {
 好，我们能够看到主应用下发的fadein组件已经能够使用了，这里有个小bug，我在主应用导出的组件信息中，附带了主应用的vue注册信息，而Vue.use()是在子应用，可能两个应用的vue版本不一致而引发一些小报错（你可以修改下library/ui/index.js只导出组件列表）, 并且在created中也打印出来了我们从主应用下发下来的工具函数和emit函数，成功！~
  * 详见[子应用Home.vue](https://github.com/hql7/wl-micro-frontends/blob/master/module-basic-data/src/views/Home.vue)
 
-### 各应用间路由管理
+### 各应用间路由基础管理
 1.在主应用内设置路由监控
 ```
 /**
