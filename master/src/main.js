@@ -27,18 +27,21 @@ import LibraryJs from "./library/js";
 // 导入主应用需要下发的emit函数
 import * as childEmit from "./util/childEmit"
 // 定义传入子应用的数据
-import pagers from "./util/pagers"
+import pager from "./util/pager"
 // 导入应用间通信介质：呼机
 let msg = {
   data: store.getters,         // 从主应用仓库读出的数据
   components: LibraryUi,       // 从主应用读出的组件库
   utils: LibraryJs,            // 从主应用读出的工具类库
   emitFnc: childEmit,          // 从主应用下发emit函数来收集子应用反馈
-  pagers                       // 从主应用下发应用间通信呼机
+  pager                       // 从主应用下发应用间通信呼机
 };
 
-import { pagersWatcher } from "./util/pagers"
-pagersWatcher()
+// 在主应用注册呼机
+pager.subscribe(v => {
+  console.log(`监听到子应用${v.from}发来消息：`, v)
+  store.dispatch('app/setToken', v.token)
+})
 
 // 主应用渲染函数
 let app = null;

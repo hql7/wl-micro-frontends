@@ -12,7 +12,7 @@
  * @param {String} title 标题 暂时没有用
  */
 function routerGo(href = '/', title = null, stateObj = {}) {
-  window.history.pushState(stateObj, title, href);
+  window.history.pushState(stateObj, title, href); 
 }
 
 

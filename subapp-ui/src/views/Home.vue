@@ -25,10 +25,6 @@ export default {
         fadein: false
       }
     };
-  },
-  created(){
-    console.log(this.$mainUtils)
-    console.log(this.changeDataMsg)
   }
 };
 </script>

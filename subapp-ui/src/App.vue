@@ -15,13 +15,8 @@
     </div>
     <div class="parent-child-communication">
       <h3>父子应用通信：</h3>
-      <span>{{msg}}</span>
-      <el-button
-        class="right"
-        type="primary"
-        size="medium"
-        @click="callParentChange('但若不见你，阳光也无趣')"
-      >通知父应用变天了</el-button>
+      <span>{{myMsg}}</span>
+      <el-button class="right" type="primary" size="medium" @click="callParentChange()">通知父应用变天了</el-button>
     </div>
     <router-view />
   </div>
@@ -32,6 +27,14 @@ export default {
   name: "basic-app",
   props: {
     msg: String
+  },
+  data() {
+    return {
+      myMsg: ""
+    };
+  },
+  created() {
+    this.myMsg = this.msg;
   },
   methods: {
     /**
@@ -53,8 +56,12 @@ export default {
     /**
      * 通知父应用变天了
      */
-    callParentChange(msg) {
-      this.$pagers.next(msg)
+    callParentChange() {
+      this.myMsg = "但若不见你，阳光也无趣";
+      this.$pager.next({
+        from: "subapp-ui",
+        token: "但若不见你，阳光也无趣"
+      });
     }
   }
 };
