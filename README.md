@@ -1,7 +1,9 @@
 # wl-micro-frontends [wl-qiankun]
 
 本项目采用 vue + qiankun 实践微前端落地。       
-同时qiankun是一个开放式微前端架构，支持当前三大前端框架甚至jq等其他项目无缝接入。
+同时qiankun是一个开放式微前端架构，支持当前三大前端框架甚至jq等其他项目无缝接入。   
+此项目为了尽可能的简单易上手，以及方便文章讲解，大部分逻辑都在主应用和子应用的main.js来回施展，   
+实际项目应用可不要如此粗暴，要有优雅的架构设计。
 
 ### 项目启动
 ```
@@ -29,7 +31,7 @@ npm run build
 + [x] 主应用与子应用通信(静态，无法监测到值变化)
 + [x] 主、子，各应用间动态通信(动态，各应用间实时监听，同步数据)
 + [x] 主应用资源下发至子应用
-+ [x] 前端鉴权方案
++ [x] 微前端鉴权方案
   + [x] 一：异步注册(主应用异步获取子应用注册表并将子应用对应的路由下发至子应用)
   + [ ] 二：异步路由(使用应用间通信，通知子应用路由数据，子应用在内部addRoutes异步插入路由)
 + [x] 各应用间路由基础管理
@@ -601,11 +603,105 @@ export async function mount({ data = {} } = {}) {
 好，我们能够看到主应用下发的fadein组件已经能够使用了，这里有个小bug，我在主应用导出的组件信息中，附带了主应用的vue注册信息，而Vue.use()是在子应用，可能两个应用的vue版本不一致而引发一些小报错（你可以修改下library/ui/index.js只导出组件列表）, 并且在created中也打印出来了我们从主应用下发下来的工具函数和emit函数，成功！~
  * 详见[子应用Home.vue](https://github.com/hql7/wl-micro-frontends/blob/master/module-basic-data/src/views/Home.vue)
 
-## 前端鉴权方案一：异步注册
+## 微前端鉴权方案
 
-前端鉴权这一块在项目中已经成为成熟又不可缺少的基础构成部分了，既然如此那微前端同样也绕不过这段路。
+  前端鉴权这一块在项目中已经成为成熟又不可缺少的基础构成部分了，既然如此那微前端同样也绕不过这段路。
+下面就从两种思路来实现微前端的前端鉴权方案
 
-## 前端鉴权方案二：异步路由
+### 异步注册(主应用异步获取子应用注册表并将子应用对应的路由下发至子应用)
+此方案采用在主应用请求获取子应用注册表及附带的子应用菜单数据，异步注册子应用，并在注册子应用时将子应用自身的路由下发，然后子应用在实例化路由前根据规则整理主应用下发的路由数据。
+
+1. 先cnpm i axios mockjs -S 引入我们要用到的插件
+
+2. 在你乐意的地方写好api封装和mockjs应用
+
+3. 老规矩，打开主应用main.js，将注册子应用步骤写在异步请求里，然后整理获取的注册表数据（这里是：[子应用注册表数据结构](https://github.com/hql7/wl-micro-frontends/blob/master/master/mock/appConfig.js)）
+  ```
+    // 获取app注册表
+    getAppConfigApi().then(({ data }) => {
+      if (data.code === 200) {
+        let _res = data.data || [];
+        // 处理菜单
+        store.dispatch('menu/setUserMenu', _res);
+        if (_res.length === 0) {
+          Message({
+            type: 'error',
+            message: "没有可以注册的子应用数据"
+          })
+          return;
+        }
+        // 处理子应用注册数据
+        let apps = [];
+        let defaultApp = null;
+        _res.forEach(i => {
+          apps.push({
+            name: i.module,
+            entry: i.entry,
+            render,
+            activeRule: genActiveRule(i.routerBase),
+            props: { ...msg, ROUTES: i.children }
+          })
+          if (i.defaultRegister) defaultApp = i.routerBase;
+        })
+        // 注册子应用
+        registerMicroApps(apps, {
+          beforeLoad: [
+            app => {
+              console.log("before load", app);
+            }
+          ],
+          beforeMount: [
+            app => {
+              console.log("before mount", app);
+            }
+          ],
+          afterUnmount: [
+            app => {
+              console.log("after unload", app);
+            }
+          ]
+        })
+        // 设置默认子应用
+        if (!defaultApp) defaultApp = _res[0].routerBase;
+        setDefaultMountApp(defaultApp);
+        // 第一个子应用加载完毕回调
+        runAfterFirstMounted((app) => {
+          console.log(app)
+        });
+        // 启动微服务
+        start({ prefetch: true });
+      }
+    })
+  ```
+4. 撸好主应用再来看下子应用main.js,将实例化路由所需的routes根据qiankun环境加载主应用下发的还是自身的路由
+  > 这里我实在不忍心再往main里塞逻辑了，将路由匹配文件摘出，详见[route-match](https://github.com/hql7/wl-micro-frontends/blob/master/subapp-ui/src/auth/route-match.js)
+  ```
+    // 导入路由匹配文件路径函数,，
+    import routeMatch from "@/auth/route-match"; 
+
+    // 判断qiankun环境
+    const __qiankun__ = window.__POWERED_BY_QIANKUN__;
+
+    // mount函数中根据qiankun环境使用主应用下发路由数据
+    export async function mount({ data, ROUTES }) {
+      router = new VueRouter({
+        base: __qiankun__ ? "/ui" : "/",
+        mode: "history",
+        routes: __qiankun__ ? routeMatch(ROUTES, "/ui") : routes
+      });
+      instance = new Vue({
+        router,
+        store,
+        render: h => h(App, { props: data })
+      }).$mount("#app");
+    }
+  ```
+5. 只需要简单的修改，一个基础鉴权就完成了，需要注意的是[route-match](https://github.com/hql7/wl-micro-frontends/blob/master/subapp-ui/src/auth/route-match.js)中设计的匹配规则需要贴合你自己的实际。
+
+6. 按钮权限部分设计放在路由元信息meta里，这样在页面内基于本页面的按钮编码判断即可，见[按钮权限](https://github.com/hql7/wl-micro-frontends/blob/master/subapp-ui/src/mixins/auth.js),但是现在主流更多的是写权限指令v-auth等，你可百度实现
+
+### 异步路由(使用应用间通信，通知子应用路由数据，子应用在内部addRoutes异步插入路由)
+  此方案和token结合较为复杂，见：[鉴权设计](https://github.com/hql7/wl-admin/tree/master/src/auth)
 
 ## 各应用间路由基础管理
 1.在主应用内设置路由监控
