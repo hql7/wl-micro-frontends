@@ -11,6 +11,7 @@ Vue.config.productionTip = false;
 
 let router = null;
 let instance = null;
+const __qiankun__ = window.__POWERED_BY_QIANKUN__;
 
 export async function bootstrap({ components, utils, emitFnc, pager }) {
   // 注册主应用下发的组件
@@ -28,10 +29,10 @@ export async function bootstrap({ components, utils, emitFnc, pager }) {
   })
   Vue.prototype.$pager = pager;
 }
- 
+
 export async function mount({ data }) {
   router = new VueRouter({
-    base: window.__POWERED_BY_QIANKUN__ ? "/ui" : "/",
+    base: __qiankun__ ? "/ui" : "/",
     mode: "history",
     routes
   });
@@ -49,7 +50,7 @@ export async function unmount() {
 }
 
 // 单独开发环境
-window.__POWERED_BY_QIANKUN__ || mount();
+__qiankun__ || mount();
 
 /* new Vue({
   router,
