@@ -8,7 +8,7 @@
     :active-text-color="themeMenu.active_text"
   >
     <div class="the-menu-logo">{{is_collapse?'WL':'WL微前端项目'}}</div>
-    <el-submenu v-for="sub of menu_data" :key="sub.id" :index="sub.id">
+    <el-submenu v-for="sub of menu" :key="sub.id" :index="sub.id">
       <template slot="title">
         <i class="menu-icon" :class="sub.icon"></i>
         <span class="menu-sub-title">{{sub.title}}</span>

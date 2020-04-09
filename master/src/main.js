@@ -2,8 +2,15 @@ import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
-
+import { getAppConfigApi } from "@/api/appConfig"
+import { Message } from "element-ui";
+// 开发环境导入api mock数据
+import { mockXHR } from '../mock'
+// if(process.env.NODE_ENV == 'development'){
+mockXHR();
+// }
 Vue.config.productionTip = false;
+
 // 导入乾坤函数
 import {
   registerMicroApps,
@@ -24,7 +31,6 @@ import { genActiveRule } from "./util";
 import LibraryUi from "./library/ui/";
 // 导入主应用工具类库
 import LibraryJs from "./library/js";
-console.log(LibraryJs)
 // 导入主应用需要下发的emit函数 
 import * as childEmit from "./util/childEmit"
 // 定义传入子应用的数据
@@ -74,50 +80,62 @@ function render({ appContent, loading } = {}) {
 };
 render();
 
-//注册子应用
-registerMicroApps(
-  [
-    {
-      name: "subapp-ui",
-      entry: "//localhost:6651",
-      render,
-      activeRule: genActiveRule("/ui"),
-      props: msg
-    },
-    {
-      name: "subapp-blog",
-      entry: "//localhost:6652",
-      render,
-      activeRule: genActiveRule("/blog"),
-      props: msg
+// 获取app注册表
+getAppConfigApi().then(({ data }) => {
+  if (data.code === 200) {
+    let _res = data.data || [];
+    // 处理菜单
+    store.dispatch('menu/setUserMenu', _res);
+    if (_res.length === 0) {
+      Message({
+        type: 'error',
+        message: "没有可以注册的子应用数据"
+      })
+      return;
     }
-  ],
-  {
-    beforeLoad: [
-      app => {
-        console.log("before load", app);
-      }
-    ],
-    beforeMount: [
-      app => {
-        console.log("before mount", app);
-      }
-    ],
-    afterUnmount: [
-      app => {
-        console.log("after unload", app);
-      }
-    ]
+    // 处理子应用注册数据
+    let apps = [];
+    let defaultApp = null;
+    _res.forEach(i => {
+      apps.push({
+        name: i.module,
+        entry: i.entry,
+        render,
+        activeRule: genActiveRule(i.routerBase),
+        props: { ...msg, ROUTES: i.children }
+      })
+      if (i.defaultRegister) defaultApp = i.routerBase;
+    })
+    // 注册子应用
+    registerMicroApps(apps, {
+      beforeLoad: [
+        app => {
+          console.log("before load", app);
+        }
+      ],
+      beforeMount: [
+        app => {
+          console.log("before mount", app);
+        }
+      ],
+      afterUnmount: [
+        app => {
+          console.log("after unload", app);
+        }
+      ]
+    })
+    // 设置默认子应用
+    if (!defaultApp) defaultApp = _res[0].routerBase;
+    setDefaultMountApp(defaultApp);
+    // 第一个子应用加载完毕回调
+    runAfterFirstMounted((app) => {
+      console.log(app)
+    });
+    // 启动微服务
+    start({ prefetch: true });
   }
-);
+})
 
-// 设置默认子应用
-setDefaultMountApp("/ui");
-// 第一个子应用加载完毕回调
-runAfterFirstMounted((app) => {
-  console.log(app)
-});
-// 启动微服务
-start({ prefetch: true });
+
 
 

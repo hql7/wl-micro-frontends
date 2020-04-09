@@ -18,13 +18,30 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/About.vue")
-  }
+  },
+  // 404
+  {
+    path: "/err-404",
+    name: "err404",
+    meta: {
+      withoutAuth: true
+    },
+    component: () => import('../views/error/404.vue')
+  },
 ];
 
-const router = new VueRouter({
+const createRouter = () => new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
   routes
 });
+
+const router = createRouter();
+
+// 重置路由
+export function resetRouter() {
+  const newRouter = createRouter()
+  router.matcher = newRouter.matcher // reset router
+}
 
 export default router;
