@@ -31,11 +31,11 @@ export async function bootstrap({ components, utils, emitFnc, pager }) {
   Vue.prototype.$pager = pager;
 }
 
-export async function mount({ data = {}, ROUTES } = {}) {
+export async function mount({ data = {}, ROUTES, routerBase } = {}) {
   router = new VueRouter({
-    base: __qiankun__ ? "/ui" : "/",
+    base: __qiankun__ ? routerBase : "/",
     mode: "history",
-    routes: __qiankun__ ? routeMatch(ROUTES, "/ui") : routes
+    routes: __qiankun__ ? routeMatch(ROUTES, routerBase) : routes
   });
   instance = new Vue({
     router,

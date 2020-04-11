@@ -102,7 +102,7 @@ getAppConfigApi().then(({ data }) => {
         entry: i.entry,
         render,
         activeRule: genActiveRule(i.routerBase),
-        props: { ...msg, ROUTES: i.children }
+        props: { ...msg, ROUTES: i.children, routerBase: i.routerBase }
       })
       if (i.defaultRegister) defaultApp = i.routerBase;
     })
