@@ -823,7 +823,7 @@ window.history.pushState({}, title, href);
 
 ## 结语
   一个简单的基于qiankun和vue的实战示例就这么结束啦。    
-  当然我们需要考虑的还有很多，但是我前天刚买的狼叔的[【前端架构：从入门到微前端】](https://item.jd.com/12621088.html)告诉我们，架构是一件持续性和渐进式的事儿，其他的后续再逐渐丰富吧~~~
+  当然我们需要考虑的还有很多，但是我前天刚买的狼叔推荐的[【前端架构：从入门到微前端】](https://item.jd.com/12621088.html)告诉我们，架构是一件持续性和渐进式的事儿，其他的后续再逐渐丰富吧~~~
 >另附Github上的demo地址:[wl-micro-frontends(wl-qiankun)](https://github.com/hql7/wl-micro-frontends)
 
 不想看我在这罗里吧嗦的直接代码跑起吧~，如果你觉得还有一点点可以，就请留个star吧~~
