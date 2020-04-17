@@ -84,6 +84,7 @@ render();
 getAppConfigApi().then(({ data }) => {
   if (data.code === 200) {
     let _res = data.data || [];
+    let _dev = process.env.NODE_ENV == 'development';
     // 处理菜单
     store.dispatch('menu/setUserMenu', _res);
     if (_res.length === 0) {
@@ -99,7 +100,7 @@ getAppConfigApi().then(({ data }) => {
     _res.forEach(i => {
       apps.push({
         name: i.module,
-        entry: i.entry,
+        entry: _dev ? i.devEntry : i.depEntry,
         render,
         activeRule: genActiveRule(i.routerBase),
         props: { ...msg, ROUTES: i.children, routerBase: i.routerBase }

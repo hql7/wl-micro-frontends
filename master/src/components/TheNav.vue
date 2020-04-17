@@ -36,7 +36,6 @@ export default {
       return this.$store.getters.is_collapse;
     }
   },
-  create() {},
   methods: {
     // 设置左侧菜单折叠状态
     setMenuCollapseStatus() {

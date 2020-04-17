@@ -6,6 +6,7 @@ function resolve(dir) {
 }
 
 const port = 6652; // dev port
+const dev = process.env.NODE_ENV === 'development'
 
 module.exports = {
   /**
@@ -15,7 +16,7 @@ module.exports = {
    * In most cases please use '/' !!!
    * Detail: https://cli.vuejs.org/config/#publicpath
    */
-  publicPath: `//localhost:${port}`,
+  publicPath: dev ? `//localhost:${port}` : '/',
   outputDir: 'dist',
   assetsDir: 'static',
   filenameHashing: true,
