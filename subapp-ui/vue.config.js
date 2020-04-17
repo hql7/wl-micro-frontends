@@ -6,7 +6,7 @@ function resolve(dir) {
 }
 
 const port = 6651; // dev port
-
+const dev = process.env.NODE_ENV === 'development'
 module.exports = {
   /**
    * You will need to set publicPath if you plan to deploy your site under a sub path,
@@ -15,7 +15,7 @@ module.exports = {
    * In most cases please use '/' !!!
    * Detail: https://cli.vuejs.org/config/#publicpath
    */
-  publicPath: `//localhost:${port}`,
+  publicPath: dev ? `//localhost:${port}` : '/',
   outputDir: 'dist',
   assetsDir: 'static',
   filenameHashing: true,
@@ -32,7 +32,7 @@ module.exports = {
     },
     headers: {
       'Access-Control-Allow-Origin': '*',
-    },
+    }
   },
   // 自定义webpack配置
   configureWebpack: {
