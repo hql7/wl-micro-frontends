@@ -18,7 +18,7 @@ import {
     runAfterFirstMounted, // 有个子应用加载完毕回调
     start, // 启动qiankun
     addGlobalUncaughtErrorHandler, // 添加全局未捕获异常处理器
-    initGlobalState, // 官方应用间通信
+    // initGlobalState, // 官方应用间通信
 } from "qiankun";
 // 按需导入element-ui
 import "./plugins/element.js";
@@ -57,10 +57,10 @@ pager.subscribe(v => {
     store.dispatch('app/setToken', v.token)
 });
 
-// 在主应用注册官方通信方案
+/* // 在主应用注册官方通信方案
 const actions = initGlobalState(msg.state);
 // 注册消息监听函数
-actions.onGlobalStateChange((state, prev) => console.log(`主应用应用监听到来自${state.from}发来消息：`, state, prev));
+actions.onGlobalStateChange((state, prev) => console.log(`主应用应用监听到来自${state.from}发来消息：`, state, prev)); */
 
 // 主应用渲染函数
 let app = null;
@@ -107,37 +107,38 @@ getAppConfigApi().then(({ data }) => {
             return;
         }
         // 处理子应用注册数据
+        let isDev = process.env.NODE_ENV === 'development';
         let apps = [];
         let defaultApp = null;
         _res.forEach(i => {
             apps.push({
                 name: i.module,
-                entry: i.entry,
+                entry: isDev ? i.devEntry : i.depEntry,
                 render,
                 activeRule: genActiveRule(i.routerBase),
-                props: {...msg, ROUTES: i.children, routerBase: i.routerBase, actions }
+                props: { ...msg, ROUTES: i.children, routerBase: i.routerBase }
             })
             if (i.defaultRegister) defaultApp = i.routerBase;
         });
         // 注册子应用
         registerMicroApps(apps, {
-                beforeLoad: [
-                    app => {
-                        console.log("before load", app);
-                    }
-                ],
-                beforeMount: [
-                    app => {
-                        console.log("before mount", app);
-                    }
-                ],
-                afterUnmount: [
-                    app => {
-                        console.log("after unload", app);
-                    }
-                ]
-            })
-            // 设置默认子应用
+            beforeLoad: [
+                app => {
+                    console.log("before load", app);
+                }
+            ],
+            beforeMount: [
+                app => {
+                    console.log("before mount", app);
+                }
+            ],
+            afterUnmount: [
+                app => {
+                    console.log("after unload", app);
+                }
+            ]
+        })
+        // 设置默认子应用
         if (!defaultApp) defaultApp = _res[0].routerBase;
         setDefaultMountApp(defaultApp);
         // 第一个子应用加载完毕回调
