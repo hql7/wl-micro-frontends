@@ -5,7 +5,8 @@
 此项目为了尽可能的简单易上手，以及方便文章讲解，大部分逻辑都在主应用和子应用的 main.js 来回施展，  
 实际项目应用可不要如此粗暴，要有优雅的架构设计。
 
-另有微前端进阶实战项目：基于 vue3.0-beta 及 qiankun2.0 极速尝鲜！[wl-mfe](https://github.com/wl-ui/wl-mfe)
+另有微前端进阶实战项目：基于 vue3.0-beta 及 qiankun2.0 极速尝鲜！[wl-mfe](https://github.com/wl-ui/wl-mfe)  
+部署教程：[使用各种姿势舒服的部署微前端项目](https://juejin.cn/post/6921649095610204173/)
 
 #### [在线地址](http://mfe.wlui.com.cn/)
 
